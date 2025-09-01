@@ -84,10 +84,10 @@ with st.sidebar.expander("Data Filters", expanded=True):
         default=df["Gender"].unique()
     )
 
-    age_filter = st.multiselect(
+    age_filter = st.selectbox(
         "Age Group",
         options=age_order,
-        default=age_order
+        index=0  # default to first group (i.e. "22-29")
     )
 
     dept_filter = st.multiselect(
