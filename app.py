@@ -1,26 +1,26 @@
 import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
-from streamlit_gsheets import GSheetsConnection
 
 st.set_page_config(page_title="Workplace PERMA+V Dashboard", layout="wide")
-
 st.title("📊 Workplace Wellbeing Dashboard (PERMA+V)")
 
 # ---------------------------
-# 1. Load Data from Google Sheets
+# 1. Load Data from Google Sheets (CSV Export)
 # ---------------------------
-st.sidebar.header("🔗 Data Source")
+SPREADSHEET_URL = "https://docs.google.com/spreadsheets/d/1ethwOtyt9_KpSkvF7zAaMUW99W1PoKp6onsIMWQ_IhU/export?format=csv"
 
-SPREADSHEET_URL = "https://docs.google.com/spreadsheets/d/1ethwOtyt9_KpSkvF7zAaMUW99W1PoKp6onsIMWQ_IhU"
-WORKSHEET = "Sheet1"
+@st.cache_data
+def load_data():
+    df = pd.read_csv(SPREADSHEET_URL)
+    # Ensure numeric columns for Q1–Q13
+    for q in [f"Q{i}" for i in range(1, 14)]:
+        if q in df.columns:
+            df[q] = pd.to_numeric(df[q], errors="coerce")
+    return df
 
-conn = st.experimental_connection("gsheets", type=GSheetsConnection)
-df = conn.read(spreadsheet=SPREADSHEET_URL, worksheet=WORKSHEET)
-
-# Ensure numeric columns are properly cast
-for q in [f"Q{i}" for i in range(1, 14)]:
-    df[q] = pd.to_numeric(df[q], errors="coerce")
+df = load_data()
+st.sidebar.header("⚙️ Data Filters")
 
 # ---------------------------
 # 2. Define PERMA+V mapping
@@ -46,8 +46,6 @@ df = pd.concat([df, perma_scores], axis=1)
 # ---------------------------
 # 3. Sidebar Filters
 # ---------------------------
-st.sidebar.header("⚙️ Filters")
-
 gender_filter = st.sidebar.multiselect("Gender", df["Gender"].unique(), default=df["Gender"].unique())
 age_filter = st.sidebar.multiselect("Age Group", df["AgeGroup"].unique(), default=df["AgeGroup"].unique())
 dept_filter = st.sidebar.multiselect("Department", df["Department"].unique(), default=df["Department"].unique())
@@ -94,9 +92,7 @@ fig.add_trace(go.Scatterpolar(
 ))
 
 fig.update_layout(
-    polar=dict(
-        radialaxis=dict(visible=True, range=[0, 5])
-    ),
+    polar=dict(radialaxis=dict(visible=True, range=[0, 5])),
     showlegend=True,
     height=600
 )
