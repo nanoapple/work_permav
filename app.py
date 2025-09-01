@@ -135,19 +135,39 @@ st.plotly_chart(fig, use_container_width=True)
 # ---------------------------
 # 5. Distribution by Dimension
 # ---------------------------
-# ---------------------------
-# Layout: 两列
-# ---------------------------
+
+# Create a new Plotly Figure for box plots
+box_fig = go.Figure()
+
+# Add one box plot per PERMA+V dimension
+for dim in dims:
+    box_fig.add_trace(
+        go.Box(
+            y=filtered_df[dim],        # Values for the selected dimension
+            name=dim,                  # Label shown on the x-axis
+            boxmean="sd",              # Display mean and standard deviation
+            marker=dict(opacity=0.6)   # Slight transparency for clarity
+        )
+    )
+
+# Update the figure layout (titles, axis range, etc.)
+box_fig.update_layout(
+    height=500,                        # Fixed height for better layout balance
+    title="Distribution by Dimension", # Title shown above the chart
+    yaxis=dict(
+        title="Score",                  # Label for the y-axis
+        range=[0, 5]                    # Scores are on a 1–5 Likert scale
+    )
+)
 col1, col2 = st.columns(2)
 
-fig_radar = fig.update_layout(title="PERMA+V Radar")
-box_fig_dist = box_fig.update_layout(title="Distribution")
-
 with col1:
-    st.plotly_chart(fig_radar, use_container_width=True)
+    st.subheader("🌟 PERMA+V Radar Chart")
+    st.plotly_chart(fig, use_container_width=True)
 
 with col2:
-    st.plotly_chart(box_fig_dist, use_container_width=True)
+    st.subheader("📈 Distribution by Dimension")
+    st.plotly_chart(box_fig, use_container_width=True)
 
 
 # ---------------------------
