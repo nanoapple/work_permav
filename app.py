@@ -6,33 +6,23 @@ import plotly.graph_objects as go
 # Page Config
 # ---------------------------
 st.set_page_config(page_title="Workplace PERMA+V Dashboard", layout="wide")
-
-# Add custom CSS to reduce top margin
-st.markdown("""
-    <style>
-    .block-container {
-        padding-top: 1rem;   /* default is ~6rem, reduced for compact view */
-    }
-    </style>
-""", unsafe_allow_html=True)
-
 st.title("Workplace Wellbeing Dashboard (PERMA+V)")
 
-# ---------------------------
-# PERMA+V Explanation
-# ---------------------------
+# Add small description of PERMA+V
 st.markdown("""
-**The PERMA+V framework** is a holistic model of wellbeing in positive psychology.  
-It identifies six dimensions of flourishing:
+<small>
+The **PERMA+V framework** is a holistic model of wellbeing developed by Martin Seligman in positive psychology.  
+It identifies six core elements that contribute to human flourishing:
 
-| **P: Positive Emotions** | **E: Engagement** | **R: Relationships** |
-|---------------------------|-------------------|-----------------------|
-| Joy, gratitude, optimism  | Flow, absorption  | Support, connection   |
+**P: Positive Emotions** — Joy, gratitude, optimism &nbsp;&nbsp;&nbsp; 
+**E: Engagement** — Flow, absorption &nbsp;&nbsp;&nbsp; 
+**R: Relationships** — Support, connection  
 
-| **M: Meaning** | **A: Accomplishment** | **V: Vitality** |
-|----------------|-----------------------|-----------------|
-| Purpose, values| Mastery, achievement  | Energy, health  |
-""")
+**M: Meaning** — Purpose, values &nbsp;&nbsp;&nbsp; 
+**A: Accomplishment** — Mastery, achievement &nbsp;&nbsp;&nbsp; 
+**V: Vitality** — Energy, health  
+</small>
+""", unsafe_allow_html=True)
 
 # ---------------------------
 # 1. Load Data from Google Sheets (CSV Export)
@@ -72,42 +62,28 @@ perma_scores = compute_perma_scores(df)
 df = pd.concat([df, perma_scores], axis=1)
 
 # ---------------------------
-# 3. Sidebar Filters (with custom order)
+# 3. Sidebar Filters (single-select dropdowns)
 # ---------------------------
-age_order = ["22-29", "30-39", "40-49", "50-60"]
-tenure_order = ["0-1 year", "2-5 years", "6-10 years", "10+ years"]
-
 with st.sidebar.expander("Data Filters", expanded=True):
-    gender_filter = st.multiselect(
-        "Gender",
-        options=df["Gender"].unique(),
-        default=df["Gender"].unique()
-    )
 
-    age_filter = st.selectbox(
-        "Age Group",
-        options=age_order,
-        index=0  # default to first group (i.e. "22-29")
-    )
+    gender_filter = st.selectbox("Gender", options=df["Gender"].unique())
+    
+    # Fix order for AgeGroup
+    age_order = ["22-29", "30-39", "40-49", "50-60"]
+    age_filter = st.selectbox("Age Group", options=age_order)
+    
+    dept_filter = st.selectbox("Department", options=df["Department"].unique())
 
-    dept_filter = st.multiselect(
-        "Department",
-        options=sorted(df["Department"].unique()),
-        default=sorted(df["Department"].unique())
-    )
-
-    tenure_filter = st.multiselect(
-        "Tenure",
-        options=tenure_order,
-        default=tenure_order
-    )
+    # Fix order for Tenure
+    tenure_order = ["0-1 year", "2-5 years", "6-10 years", "10+ years"]
+    tenure_filter = st.selectbox("Tenure", options=tenure_order)
 
 # Apply filters
 filtered_df = df[
-    (df["Gender"].isin(gender_filter)) &
-    (df["AgeGroup"].isin(age_filter)) &
-    (df["Department"].isin(dept_filter)) &
-    (df["Tenure"].isin(tenure_filter))
+    (df["Gender"] == gender_filter) &
+    (df["AgeGroup"] == age_filter) &
+    (df["Department"] == dept_filter) &
+    (df["Tenure"] == tenure_filter)
 ]
 
 st.sidebar.write(f"✅ {len(filtered_df)} employees selected")
@@ -121,7 +97,7 @@ avg_scores = [filtered_df[d].mean() for d in dims]
 fig = go.Figure()
 
 # Overlay all individuals
-for _, row in filtered_df.iterrows():
+for i, row in filtered_df.iterrows():
     fig.add_trace(go.Scatterpolar(
         r=row[dims].values,
         theta=dims,
@@ -143,18 +119,18 @@ fig.add_trace(go.Scatterpolar(
 
 fig.update_layout(
     polar=dict(
-        radialaxis=dict(visible=True, range=[0, 5]),
-        angularaxis=dict(tickfont=dict(size=18))  # Bigger PERMA+V letters
+        radialaxis=dict(visible=True, range=[0, 5], tickfont=dict(size=12)),
+        angularaxis=dict(tickfont=dict(size=14))  # Bigger PERMA+V letters
     ),
     showlegend=True,
-    height=600
+    height=600,
+    margin=dict(t=50, b=20)  # Title spacing adjustment
 )
 
 # ---------------------------
 # 5. Distribution by Dimension
 # ---------------------------
 box_fig = go.Figure()
-
 for dim in dims:
     box_fig.add_trace(
         go.Box(
@@ -171,8 +147,9 @@ box_fig.update_layout(
     yaxis=dict(title="Score", range=[0, 5])
 )
 
-# Layout: two columns
+# Layout: 2 columns
 col1, col2 = st.columns(2)
+
 with col1:
     st.subheader("🌟 PERMA+V Radar Chart")
     st.plotly_chart(fig, use_container_width=True)
@@ -184,6 +161,6 @@ with col2:
 # ---------------------------
 # 6. Summary Statistics
 # ---------------------------
-st.subheader("Summary Statistics")
+st.subheader("📊 Summary Statistics")
 summary = filtered_df[dims].agg(["mean", "std", "min", "max"]).T
 st.dataframe(summary.style.format("{:.2f}"))
