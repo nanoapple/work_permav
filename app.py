@@ -12,7 +12,7 @@ st.title("📊 Workplace Wellbeing Dashboard (PERMA+V)")
 # ---------------------------
 st.sidebar.header("🔗 Data Source")
 
-SPREADSHEET_URL = st.secrets.get("SPREADSHEET_URL", "YOUR_GOOGLE_SHEET_URL")
+SPREADSHEET_URL = "https://docs.google.com/spreadsheets/d/1ethwOtyt9_KpSkvF7zAaMUW99W1PoKp6onsIMWQ_IhU"
 WORKSHEET = "Sheet1"
 
 conn = st.experimental_connection("gsheets", type=GSheetsConnection)
