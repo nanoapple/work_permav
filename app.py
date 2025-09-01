@@ -139,7 +139,7 @@ fig.update_layout(
     polar=dict(
         radialaxis=dict(visible=True, range=[0, 5]),
         angularaxis=dict(
-            tickfont=dict(size=18)  # Increase PERMA+V label size
+            tickfont=dict(size=22)  # PERMA+V label size
         )
     ),
     showlegend=True,
