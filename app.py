@@ -11,7 +11,7 @@ st.title("Workplace Wellbeing Dashboard (PERMA+V)")
 # Add small description of PERMA+V
 st.markdown("""
 <small>
-The **PERMA+V framework** is a holistic model of wellbeing developed by Martin Seligman in positive psychology.  
+The PERMA+V framework is a holistic model of wellbeing developed by Martin Seligman in positive psychology.  
 It identifies six core elements that contribute to human flourishing:
 <table style="table-layout: fixed; width: 60%; border-collapse: collapse; text-align: center;">
   <tr>
