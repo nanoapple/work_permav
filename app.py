@@ -55,11 +55,11 @@ df = load_data()
 # ---------------------------
 perma_mapping = {
     "P": ["Q1", "Q2"],            # Positive Emotion
-    "E": ["Q3", "Q4"],            # Engagement
-    "R": ["Q5", "Q6"],            # Relationships
-    "M": ["Q7", "Q8"],            # Meaning
-    "A": ["Q9", "Q10"],           # Accomplishment
-    "V": ["Q11", "Q12", "Q13"],   # Vitality
+    "E": ["Q3"],                  # Engagement
+    "R": ["Q4", "Q5"],            # Relationships
+    "M": ["Q6", "Q7"],            # Meaning
+    "A": ["Q8", "Q9"],            # Accomplishment
+    "V": ["Q10", "Q11", "Q12", "Q13"],   # Vitality
 }
 
 def compute_perma_scores(df):
