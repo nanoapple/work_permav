@@ -185,16 +185,16 @@ box_fig.update_layout(
 col1, col2 = st.columns(2)
 
 with col1:
-    st.subheader("🌟 PERMA+V Radar Chart")
+    st.subheader("PERMA+V Radar Chart")
     st.plotly_chart(fig, use_container_width=True)
 
 with col2:
-    st.subheader("📈 Distribution by Dimension")
+    st.subheader("Distribution by Dimension")
     st.plotly_chart(box_fig, use_container_width=True)
 
 # ---------------------------
 # 6. Summary Statistics
 # ---------------------------
-st.subheader("📊 Summary Statistics")
+st.subheader("Summary Statistics")
 summary = filtered_df[dims].agg(["mean", "std", "min", "max"]).T
 st.dataframe(summary.style.format("{:.2f}"))
