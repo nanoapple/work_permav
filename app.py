@@ -140,13 +140,14 @@ st.plotly_chart(fig, use_container_width=True)
 # ---------------------------
 col1, col2 = st.columns(2)
 
+fig_radar = fig.update_layout(title="PERMA+V Radar")
+box_fig_dist = box_fig.update_layout(title="Distribution")
+
 with col1:
-    st.subheader("🌟 PERMA+V Radar Chart")
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig_radar, use_container_width=True)
 
 with col2:
-    st.subheader("📈 Distribution by Dimension")
-    st.plotly_chart(box_fig, use_container_width=True)
+    st.plotly_chart(box_fig_dist, use_container_width=True)
 
 
 # ---------------------------
