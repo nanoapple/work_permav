@@ -135,14 +135,19 @@ st.plotly_chart(fig, use_container_width=True)
 # ---------------------------
 # 5. Distribution by Dimension
 # ---------------------------
-st.subheader("📈 Distribution by Dimension")
+# ---------------------------
+# Layout: 两列
+# ---------------------------
+col1, col2 = st.columns(2)
 
-box_fig = go.Figure()
-for dim in dims:
-    box_fig.add_trace(go.Box(y=filtered_df[dim], name=dim, boxmean="sd"))
+with col1:
+    st.subheader("🌟 PERMA+V Radar Chart")
+    st.plotly_chart(fig, use_container_width=True)
 
-box_fig.update_layout(height=500)
-st.plotly_chart(box_fig, use_container_width=True)
+with col2:
+    st.subheader("📈 Distribution by Dimension")
+    st.plotly_chart(box_fig, use_container_width=True)
+
 
 # ---------------------------
 # 6. Summary Statistics
