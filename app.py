@@ -14,12 +14,11 @@ st.markdown("""
 The **PERMA+V framework** is a holistic model of wellbeing developed by Martin Seligman in positive psychology.  
 It identifies six core elements that contribute to human flourishing:
 
-**P: Positive Emotions** — Joy, gratitude, optimism &nbsp;&nbsp;&nbsp; 
-**E: Engagement** — Flow, absorption &nbsp;&nbsp;&nbsp; 
+**P: Positive Emotions** — Joy, gratitude, optimism 
+**E: Engagement** — Flow, absorption 
 **R: Relationships** — Support, connection  
-
-**M: Meaning** — Purpose, values &nbsp;&nbsp;&nbsp; 
-**A: Accomplishment** — Mastery, achievement &nbsp;&nbsp;&nbsp; 
+**M: Meaning** — Purpose, values 
+**A: Accomplishment** — Mastery, achievement
 **V: Vitality** — Energy, health  
 </small>
 """, unsafe_allow_html=True)
