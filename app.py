@@ -46,7 +46,7 @@ df = pd.concat([df, perma_scores], axis=1)
 # ---------------------------
 # 3. Sidebar Filters (改进版：下拉 + 折叠)
 # ---------------------------
-with st.sidebar.expander("⚙️ Data Filters", expanded=True):
+with st.sidebar.expander("Data Filters", expanded=True):
 
     gender_filter = st.multiselect(
         "Gender", 
