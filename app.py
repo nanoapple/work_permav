@@ -44,13 +44,45 @@ perma_scores = compute_perma_scores(df)
 df = pd.concat([df, perma_scores], axis=1)
 
 # ---------------------------
-# 3. Sidebar Filters
+# 3. Sidebar Filters (改进版：下拉 + 折叠)
 # ---------------------------
-gender_filter = st.sidebar.multiselect("Gender", df["Gender"].unique(), default=df["Gender"].unique())
-age_filter = st.sidebar.multiselect("Age Group", df["AgeGroup"].unique(), default=df["AgeGroup"].unique())
-dept_filter = st.sidebar.multiselect("Department", df["Department"].unique(), default=df["Department"].unique())
-tenure_filter = st.sidebar.multiselect("Tenure", df["Tenure"].unique(), default=df["Tenure"].unique())
+with st.sidebar.expander("⚙️ Data Filters", expanded=False):
 
+    gender_filter = st.multiselect(
+        "Gender", 
+        options=df["Gender"].unique(),
+        default=None
+    )
+
+    age_filter = st.multiselect(
+        "Age Group", 
+        options=df["AgeGroup"].unique(),
+        default=None
+    )
+
+    dept_filter = st.multiselect(
+        "Department", 
+        options=df["Department"].unique(),
+        default=None
+    )
+
+    tenure_filter = st.multiselect(
+        "Tenure", 
+        options=df["Tenure"].unique(),
+        default=None
+    )
+
+# 如果用户没选，就默认全部
+if not gender_filter:
+    gender_filter = df["Gender"].unique()
+if not age_filter:
+    age_filter = df["AgeGroup"].unique()
+if not dept_filter:
+    dept_filter = df["Department"].unique()
+if not tenure_filter:
+    tenure_filter = df["Tenure"].unique()
+
+# 应用过滤
 filtered_df = df[
     (df["Gender"].isin(gender_filter)) &
     (df["AgeGroup"].isin(age_filter)) &
@@ -59,6 +91,7 @@ filtered_df = df[
 ]
 
 st.sidebar.write(f"✅ {len(filtered_df)} employees selected")
+
 
 # ---------------------------
 # 4. Radar Chart (PERMA+V)
