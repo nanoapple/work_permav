@@ -62,47 +62,49 @@ perma_scores = compute_perma_scores(df)
 df = pd.concat([df, perma_scores], axis=1)
 
 # ---------------------------
-# 3. Sidebar Filters (multi-select dropdowns)
+# 3. Sidebar Filters (single-select dropdowns)
 # ---------------------------
 with st.sidebar.expander("Data Filters", expanded=True):
 
-    gender_filter = st.multiselect(
+    gender_filter = st.selectbox(
         "Gender", 
-        options=df["Gender"].unique(),
-        default=df["Gender"].unique()
+        options=["Choose options"] + list(df["Gender"].unique())
     )
     
     # Fix order for AgeGroup
     age_order = ["22-29", "30-39", "40-49", "50-60"]
-    age_filter = st.multiselect(
+    age_filter = st.selectbox(
         "Age Group", 
-        options=age_order,
-        default=age_order
+        options=["Choose options"] + age_order
     )
     
-    dept_filter = st.multiselect(
+    dept_filter = st.selectbox(
         "Department", 
-        options=df["Department"].unique(),
-        default=df["Department"].unique()
+        options=["Choose options"] + sorted(df["Department"].unique())
     )
 
     # Fix order for Tenure
     tenure_order = ["0-1 year", "2-5 years", "6-10 years", "10+ years"]
-    tenure_filter = st.multiselect(
+    tenure_filter = st.selectbox(
         "Tenure", 
-        options=tenure_order,
-        default=tenure_order
+        options=["Choose options"] + tenure_order
     )
 
-# Apply filters
-filtered_df = df[
-    (df["Gender"].isin(gender_filter)) &
-    (df["AgeGroup"].isin(age_filter)) &
-    (df["Department"].isin(dept_filter)) &
-    (df["Tenure"].isin(tenure_filter))
-]
+# ---------------------------
+# Apply filters (skip "Choose options")
+# ---------------------------
+filtered_df = df.copy()
+if gender_filter != "Choose options":
+    filtered_df = filtered_df[filtered_df["Gender"] == gender_filter]
+if age_filter != "Choose options":
+    filtered_df = filtered_df[filtered_df["AgeGroup"] == age_filter]
+if dept_filter != "Choose options":
+    filtered_df = filtered_df[filtered_df["Department"] == dept_filter]
+if tenure_filter != "Choose options":
+    filtered_df = filtered_df[filtered_df["Tenure"] == tenure_filter]
 
 st.sidebar.write(f"✅ {len(filtered_df)} employees selected")
+
 
 # ---------------------------
 # 4. Radar Chart (PERMA+V)
