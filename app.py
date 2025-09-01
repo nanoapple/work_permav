@@ -39,7 +39,7 @@ It identifies six core elements that contribute to human flourishing:
 # ---------------------------
 SPREADSHEET_URL = "https://docs.google.com/spreadsheets/d/1ethwOtyt9_KpSkvF7zAaMUW99W1PoKp6onsIMWQ_IhU/export?format=csv"
 
-@st.cache_data
+@st.cache_data(ttl=5)  
 def load_data():
     df = pd.read_csv(SPREADSHEET_URL)
     # Ensure numeric columns for Q1–Q13
