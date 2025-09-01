@@ -130,22 +130,29 @@ fig.update_layout(
 # ---------------------------
 # 5. Distribution by Dimension
 # ---------------------------
+
 box_fig = go.Figure()
+
+# Add one box plot per PERMA+V dimension
 for dim in dims:
     box_fig.add_trace(
         go.Box(
-            y=filtered_df[dim],
-            name=dim,
-            boxmean="sd",
-            marker=dict(opacity=0.6)
+            y=filtered_df[dim],        # Values for the selected dimension
+            name=dim,                  # Label shown on the x-axis
+            boxmean="sd",              # Display mean and standard deviation
+            marker=dict(opacity=0.6)   # Slight transparency
         )
     )
 
 box_fig.update_layout(
     height=500,
     title="Distribution by Dimension",
-    yaxis=dict(title="Score", range=[0, 5])
+    yaxis=dict(
+        title="Score",
+        range=[0, 5]   # Scores are on a 1–5 Likert scale
+    )
 )
+
 
 # Layout: 2 columns
 col1, col2 = st.columns(2)
