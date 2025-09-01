@@ -21,7 +21,11 @@ def load_data():
 
 df = load_data()
 with st.sidebar.expander("Data Filters", expanded=True):
-    st.write("Use the filters below to refine the dataset.")
+    gender_filter = st.multiselect("Gender", df["Gender"].unique())
+    age_filter = st.multiselect("Age Group", df["AgeGroup"].unique())
+    dept_filter = st.multiselect("Department", df["Department"].unique())
+    tenure_filter = st.multiselect("Tenure", df["Tenure"].unique())
+
 
 # ---------------------------
 # 2. Define PERMA+V mapping
