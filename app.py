@@ -20,11 +20,6 @@ def load_data():
     return df
 
 df = load_data()
-with st.sidebar.expander("Data Filters", expanded=True):
-    gender_filter = st.multiselect("Gender", df["Gender"].unique())
-    age_filter = st.multiselect("Age Group", df["AgeGroup"].unique())
-    dept_filter = st.multiselect("Department", df["Department"].unique())
-    tenure_filter = st.multiselect("Tenure", df["Tenure"].unique())
 
 
 # ---------------------------
@@ -51,33 +46,30 @@ df = pd.concat([df, perma_scores], axis=1)
 # ---------------------------
 # 3. Sidebar Filters (改进版：下拉 + 折叠)
 # ---------------------------
-with st.sidebar.expander("Data Filters", expanded=False):
+with st.sidebar.expander("⚙️ Data Filters", expanded=True):
 
     gender_filter = st.multiselect(
         "Gender", 
         options=df["Gender"].unique(),
         default=None
     )
-
     age_filter = st.multiselect(
         "Age Group", 
         options=df["AgeGroup"].unique(),
         default=None
     )
-
     dept_filter = st.multiselect(
         "Department", 
         options=df["Department"].unique(),
         default=None
     )
-
     tenure_filter = st.multiselect(
         "Tenure", 
         options=df["Tenure"].unique(),
         default=None
     )
 
-# 如果用户没选，就默认全部
+# Defaults if no selection
 if not gender_filter:
     gender_filter = df["Gender"].unique()
 if not age_filter:
@@ -87,7 +79,7 @@ if not dept_filter:
 if not tenure_filter:
     tenure_filter = df["Tenure"].unique()
 
-# 应用过滤
+# Apply filters
 filtered_df = df[
     (df["Gender"].isin(gender_filter)) &
     (df["AgeGroup"].isin(age_filter)) &
