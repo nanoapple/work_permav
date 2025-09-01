@@ -2,23 +2,37 @@ import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
 
+# ---------------------------
+# Page Config
+# ---------------------------
 st.set_page_config(page_title="Workplace PERMA+V Dashboard", layout="wide")
+
+# Add custom CSS to reduce top margin
+st.markdown("""
+    <style>
+    .block-container {
+        padding-top: 1rem;   /* default is ~6rem, reduced for compact view */
+    }
+    </style>
+""", unsafe_allow_html=True)
+
 st.title("Workplace Wellbeing Dashboard (PERMA+V)")
 
-col1, col2, col3, col4, col5, col6 = st.columns(6)
-with col1:
-    st.markdown("**P: Positive Emotions**<br/>Joy, gratitude, optimism", unsafe_allow_html=True)
-with col2:
-    st.markdown("**E: Engagement**<br/>Flow, absorption", unsafe_allow_html=True)
-with col3:
-    st.markdown("**R: Relationships**<br/>Support, connection", unsafe_allow_html=True)
-with col4:
-    st.markdown("**M: Meaning**<br/>Purpose, values", unsafe_allow_html=True)
-with col5:
-    st.markdown("**A: Accomplishment**<br/>Mastery, achievement", unsafe_allow_html=True)
-with col6:
-    st.markdown("**V: Vitality**<br/>Energy, health", unsafe_allow_html=True)
+# ---------------------------
+# PERMA+V Explanation
+# ---------------------------
+st.markdown("""
+**The PERMA+V framework** is a holistic model of wellbeing in positive psychology.  
+It identifies six dimensions of flourishing:
 
+| **P: Positive Emotions** | **E: Engagement** | **R: Relationships** |
+|---------------------------|-------------------|-----------------------|
+| Joy, gratitude, optimism  | Flow, absorption  | Support, connection   |
+
+| **M: Meaning** | **A: Accomplishment** | **V: Vitality** |
+|----------------|-----------------------|-----------------|
+| Purpose, values| Mastery, achievement  | Energy, health  |
+""")
 
 # ---------------------------
 # 1. Load Data from Google Sheets (CSV Export)
@@ -35,7 +49,6 @@ def load_data():
     return df
 
 df = load_data()
-
 
 # ---------------------------
 # 2. Define PERMA+V mapping
@@ -59,40 +72,35 @@ perma_scores = compute_perma_scores(df)
 df = pd.concat([df, perma_scores], axis=1)
 
 # ---------------------------
-# 3. Sidebar Filters (改进版：下拉 + 折叠)
+# 3. Sidebar Filters (with custom order)
 # ---------------------------
+age_order = ["22-29", "30-39", "40-49", "50-60"]
+tenure_order = ["0-1 year", "2-5 years", "6-10 years", "10+ years"]
+
 with st.sidebar.expander("Data Filters", expanded=True):
-
     gender_filter = st.multiselect(
-        "Gender", 
+        "Gender",
         options=df["Gender"].unique(),
-        default=None
-    )
-    age_filter = st.multiselect(
-        "Age Group", 
-        options=df["AgeGroup"].unique(),
-        default=None
-    )
-    dept_filter = st.multiselect(
-        "Department", 
-        options=df["Department"].unique(),
-        default=None
-    )
-    tenure_filter = st.multiselect(
-        "Tenure", 
-        options=df["Tenure"].unique(),
-        default=None
+        default=df["Gender"].unique()
     )
 
-# Defaults if no selection
-if not gender_filter:
-    gender_filter = df["Gender"].unique()
-if not age_filter:
-    age_filter = df["AgeGroup"].unique()
-if not dept_filter:
-    dept_filter = df["Department"].unique()
-if not tenure_filter:
-    tenure_filter = df["Tenure"].unique()
+    age_filter = st.multiselect(
+        "Age Group",
+        options=age_order,
+        default=age_order
+    )
+
+    dept_filter = st.multiselect(
+        "Department",
+        options=sorted(df["Department"].unique()),
+        default=sorted(df["Department"].unique())
+    )
+
+    tenure_filter = st.multiselect(
+        "Tenure",
+        options=tenure_order,
+        default=tenure_order
+    )
 
 # Apply filters
 filtered_df = df[
@@ -102,20 +110,18 @@ filtered_df = df[
     (df["Tenure"].isin(tenure_filter))
 ]
 
-st.sidebar.write(f"{len(filtered_df)} employees selected")
-
+st.sidebar.write(f"✅ {len(filtered_df)} employees selected")
 
 # ---------------------------
 # 4. Radar Chart (PERMA+V)
 # ---------------------------
-
 dims = list(perma_mapping.keys())
 avg_scores = [filtered_df[d].mean() for d in dims]
 
 fig = go.Figure()
 
 # Overlay all individuals
-for i, row in filtered_df.iterrows():
+for _, row in filtered_df.iterrows():
     fig.add_trace(go.Scatterpolar(
         r=row[dims].values,
         theta=dims,
@@ -138,57 +144,46 @@ fig.add_trace(go.Scatterpolar(
 fig.update_layout(
     polar=dict(
         radialaxis=dict(visible=True, range=[0, 5]),
-        angularaxis=dict(
-            tickfont=dict(size=22)  # PERMA+V label size
-        )
+        angularaxis=dict(tickfont=dict(size=18))  # Bigger PERMA+V letters
     ),
     showlegend=True,
     height=600
 )
 
-
 # ---------------------------
 # 5. Distribution by Dimension
 # ---------------------------
-
-# Create a new Plotly Figure for box plots
 box_fig = go.Figure()
 
-# Add one box plot per PERMA+V dimension
 for dim in dims:
     box_fig.add_trace(
         go.Box(
-            y=filtered_df[dim],        # Values for the selected dimension
-            name=dim,                  # Label shown on the x-axis
-            boxmean="sd",              # Display mean and standard deviation
-            marker=dict(opacity=0.6)   # Slight transparency for clarity
+            y=filtered_df[dim],
+            name=dim,
+            boxmean="sd",
+            marker=dict(opacity=0.6)
         )
     )
 
-# Update the figure layout (titles, axis range, etc.)
 box_fig.update_layout(
-    height=500,                        # Fixed height for better layout balance
-    title="Distribution by Dimension", # Title shown above the chart
-    yaxis=dict(
-        title="Score",                  # Label for the y-axis
-        range=[0, 5]                    # Scores are on a 1–5 Likert scale
-    )
+    height=500,
+    title="Distribution by Dimension",
+    yaxis=dict(title="Score", range=[0, 5])
 )
-col1, col2 = st.columns(2)
 
+# Layout: two columns
+col1, col2 = st.columns(2)
 with col1:
-    st.subheader("PERMA+V Radar Chart")
+    st.subheader("🌟 PERMA+V Radar Chart")
     st.plotly_chart(fig, use_container_width=True)
 
 with col2:
-    st.subheader("Distribution by Dimension")
+    st.subheader("📈 Distribution by Dimension")
     st.plotly_chart(box_fig, use_container_width=True)
-
 
 # ---------------------------
 # 6. Summary Statistics
 # ---------------------------
 st.subheader("Summary Statistics")
-
 summary = filtered_df[dims].agg(["mean", "std", "min", "max"]).T
 st.dataframe(summary.style.format("{:.2f}"))
