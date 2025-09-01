@@ -62,28 +62,44 @@ perma_scores = compute_perma_scores(df)
 df = pd.concat([df, perma_scores], axis=1)
 
 # ---------------------------
-# 3. Sidebar Filters (single-select dropdowns)
+# 3. Sidebar Filters (multi-select dropdowns)
 # ---------------------------
 with st.sidebar.expander("Data Filters", expanded=True):
 
-    gender_filter = st.selectbox("Gender", options=df["Gender"].unique())
+    gender_filter = st.multiselect(
+        "Gender", 
+        options=df["Gender"].unique(),
+        default=df["Gender"].unique()
+    )
     
     # Fix order for AgeGroup
     age_order = ["22-29", "30-39", "40-49", "50-60"]
-    age_filter = st.selectbox("Age Group", options=age_order)
+    age_filter = st.multiselect(
+        "Age Group", 
+        options=age_order,
+        default=age_order
+    )
     
-    dept_filter = st.selectbox("Department", options=df["Department"].unique())
+    dept_filter = st.multiselect(
+        "Department", 
+        options=df["Department"].unique(),
+        default=df["Department"].unique()
+    )
 
     # Fix order for Tenure
     tenure_order = ["0-1 year", "2-5 years", "6-10 years", "10+ years"]
-    tenure_filter = st.selectbox("Tenure", options=tenure_order)
+    tenure_filter = st.multiselect(
+        "Tenure", 
+        options=tenure_order,
+        default=tenure_order
+    )
 
 # Apply filters
 filtered_df = df[
-    (df["Gender"] == gender_filter) &
-    (df["AgeGroup"] == age_filter) &
-    (df["Department"] == dept_filter) &
-    (df["Tenure"] == tenure_filter)
+    (df["Gender"].isin(gender_filter)) &
+    (df["AgeGroup"].isin(age_filter)) &
+    (df["Department"].isin(dept_filter)) &
+    (df["Tenure"].isin(tenure_filter))
 ]
 
 st.sidebar.write(f"✅ {len(filtered_df)} employees selected")
@@ -120,38 +136,34 @@ fig.add_trace(go.Scatterpolar(
 fig.update_layout(
     polar=dict(
         radialaxis=dict(visible=True, range=[0, 5], tickfont=dict(size=12)),
-        angularaxis=dict(tickfont=dict(size=14))  # Bigger PERMA+V letters
+        angularaxis=dict(tickfont=dict(size=16))  # Bigger PERMA+V letters
     ),
     showlegend=True,
     height=600,
-    margin=dict(t=50, b=20)  # Title spacing adjustment
+    margin=dict(t=40, b=20)  # Title spacing adjustment
 )
 
 # ---------------------------
 # 5. Distribution by Dimension
 # ---------------------------
-
-# Create a new Plotly Figure for box plots
 box_fig = go.Figure()
 
-# Add one box plot per PERMA+V dimension
 for dim in dims:
     box_fig.add_trace(
         go.Box(
-            y=filtered_df[dim],        # Values for the selected dimension
-            name=dim,                  # Label shown on the x-axis
-            boxmean="sd",              # Display mean and standard deviation
-            marker=dict(opacity=0.6)   # Slight transparency for clarity
+            y=filtered_df[dim],
+            name=dim,
+            boxmean="sd",
+            marker=dict(opacity=0.6)
         )
     )
 
-# Update the figure layout (titles, axis range, etc.)
 box_fig.update_layout(
     height=500,
     title="Distribution by Dimension",
     yaxis=dict(
         title="Score",
-        range=[0, 5]   # Scores are on a 1–5 Likert scale
+        range=[0, 5]
     )
 )
 
@@ -167,7 +179,6 @@ with col1:
 with col2:
     st.subheader("📈 Distribution by Dimension")
     st.plotly_chart(box_fig, use_container_width=True)
-
 
 # ---------------------------
 # 6. Summary Statistics
