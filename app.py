@@ -131,6 +131,7 @@ fig.update_layout(
 # 5. Distribution by Dimension
 # ---------------------------
 
+# Create a new Plotly Figure for box plots
 box_fig = go.Figure()
 
 # Add one box plot per PERMA+V dimension
@@ -140,10 +141,11 @@ for dim in dims:
             y=filtered_df[dim],        # Values for the selected dimension
             name=dim,                  # Label shown on the x-axis
             boxmean="sd",              # Display mean and standard deviation
-            marker=dict(opacity=0.6)   # Slight transparency
+            marker=dict(opacity=0.6)   # Slight transparency for clarity
         )
     )
 
+# Update the figure layout (titles, axis range, etc.)
 box_fig.update_layout(
     height=500,
     title="Distribution by Dimension",
@@ -153,8 +155,9 @@ box_fig.update_layout(
     )
 )
 
-
-# Layout: 2 columns
+# ---------------------------
+# Layout: two columns
+# ---------------------------
 col1, col2 = st.columns(2)
 
 with col1:
@@ -164,6 +167,7 @@ with col1:
 with col2:
     st.subheader("📈 Distribution by Dimension")
     st.plotly_chart(box_fig, use_container_width=True)
+
 
 # ---------------------------
 # 6. Summary Statistics
