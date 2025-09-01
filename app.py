@@ -4,6 +4,16 @@ import plotly.graph_objects as go
 
 st.set_page_config(page_title="Workplace PERMA+V Dashboard", layout="wide")
 st.title("Workplace Wellbeing Dashboard (PERMA+V)")
+st.caption(
+    "The **PERMA+V framework** is a holistic model of wellbeing developed by Martin Seligman "
+    "in positive psychology. It identifies six core elements that contribute to human flourishing: "
+    "**Positive Emotions (P)**, the experience of joy and gratitude; **Engagement (E)**, being absorbed "
+    "in meaningful activities; **Relationships (R)**, building supportive and authentic connections; "
+    "**Meaning (M)**, having purpose and a sense of belonging to something larger; **Accomplishment (A)**, "
+    "achieving goals and developing mastery; and **Vitality (V)**, maintaining physical health, energy, "
+    "and resilience. Together, these dimensions provide a comprehensive view of psychological and "
+    "physical wellbeing in both personal and workplace contexts."
+)
 
 # ---------------------------
 # 1. Load Data from Google Sheets (CSV Export)
@@ -87,7 +97,7 @@ filtered_df = df[
     (df["Tenure"].isin(tenure_filter))
 ]
 
-st.sidebar.write(f"The PERMA+V framework is a holistic model of wellbeing developed by Martin Seligman in positive psychology. It identifies six core elements that contribute to human flourishing: Positive Emotions (P), the experience of joy and gratitude; Engagement (E), being absorbed in meaningful activities; Relationships (R), building supportive and authentic connections; Meaning (M), having purpose and a sense of belonging to something larger; Accomplishment (A), achieving goals and developing mastery; and Vitality (V), maintaining physical health, energy, and resilience. Together, these dimensions provide a comprehensive view of psychological and physical wellbeing in both personal and workplace contexts.")
+st.sidebar.write(f"{len(filtered_df)} employees selected")
 
 
 # ---------------------------
