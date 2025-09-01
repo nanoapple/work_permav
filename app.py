@@ -4,8 +4,6 @@ import plotly.graph_objects as go
 
 st.set_page_config(page_title="Workplace PERMA+V Dashboard", layout="wide")
 st.title("Workplace Wellbeing Dashboard (PERMA+V)")
-st.title("Workplace Wellbeing Dashboard (PERMA+V)")
-
 st.markdown("""
 The **PERMA+V framework** is a holistic model of wellbeing developed by Martin Seligman 
 in positive psychology. It identifies six core elements that contribute to human flourishing:
@@ -15,7 +13,7 @@ in positive psychology. It identifies six core elements that contribute to human
 | Joy, gratitude, optimism  | Flow, absorption  | Support, connection   |
 
 | **M: Meaning** | **A: Accomplishment** | **V: Vitality** |
-|----------------|-----------------------|-----------------|
+|---------------------------|-------------------|-----------------------|
 | Purpose, values | Mastery, achievement  | Energy, health  |
 """)
 
