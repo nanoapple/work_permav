@@ -20,7 +20,8 @@ def load_data():
     return df
 
 df = load_data()
-st.sidebar.header("⚙️ Data Filters")
+with st.sidebar.expander("Data Filters", expanded=True):
+    st.write("Use the filters below to refine the dataset.")
 
 # ---------------------------
 # 2. Define PERMA+V mapping
