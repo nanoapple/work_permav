@@ -3,7 +3,7 @@ import pandas as pd
 import plotly.graph_objects as go
 
 st.set_page_config(page_title="Workplace PERMA+V Dashboard", layout="wide")
-st.title("📊 Workplace Wellbeing Dashboard (PERMA+V)")
+st.title("Workplace Wellbeing Dashboard (PERMA+V)")
 
 # ---------------------------
 # 1. Load Data from Google Sheets (CSV Export)
@@ -46,7 +46,7 @@ df = pd.concat([df, perma_scores], axis=1)
 # ---------------------------
 # 3. Sidebar Filters (改进版：下拉 + 折叠)
 # ---------------------------
-with st.sidebar.expander("⚙️ Data Filters", expanded=False):
+with st.sidebar.expander("Data Filters", expanded=False):
 
     gender_filter = st.multiselect(
         "Gender", 
@@ -96,7 +96,6 @@ st.sidebar.write(f"✅ {len(filtered_df)} employees selected")
 # ---------------------------
 # 4. Radar Chart (PERMA+V)
 # ---------------------------
-st.subheader("🌟 PERMA+V Radar Chart")
 
 dims = list(perma_mapping.keys())
 avg_scores = [filtered_df[d].mean() for d in dims]
@@ -161,18 +160,18 @@ box_fig.update_layout(
 col1, col2 = st.columns(2)
 
 with col1:
-    st.subheader("🌟 PERMA+V Radar Chart")
+    st.subheader("PERMA+V Radar Chart")
     st.plotly_chart(fig, use_container_width=True)
 
 with col2:
-    st.subheader("📈 Distribution by Dimension")
+    st.subheader("Distribution by Dimension")
     st.plotly_chart(box_fig, use_container_width=True)
 
 
 # ---------------------------
 # 6. Summary Statistics
 # ---------------------------
-st.subheader("📊 Summary Statistics")
+st.subheader("Summary Statistics")
 
 summary = filtered_df[dims].agg(["mean", "std", "min", "max"]).T
 st.dataframe(summary.style.format("{:.2f}"))
